@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+//segment tree
+void lazyUpdate(int st[], int lazy[], int qs, int qe, int low, int high, int value, int pos){
+    if(low > high) return;
+    if(lazy[pos] != 0){
+        st[pos] += lazy[pos];
+        if(low != high){
+            lazy[2*pos+1]+=lazy[pos];
+            lazy[2*pos+2]+=lazy[pos];
+        }
+        lazy[pos]=0;
+    }
+    if(low >= qs && qe >= high){
+        st[pos]+=value;
+        if(low != high){
+            lazy[2*pos+1]+=lazy[pos];
+            lazy[2*pos+2]+=lazy[pos];
+        }
+        return;
+    }
+    if(high<qs || low > qe) return;
+    int mid = (low+high)/2;
+    lazyUpdate(st, lazy, qs, qe, low, mid, value, 2*pos+1);
+    lazyUpdate(st, lazy, qs, qe, mid+1, high, value, 2*pos+2);
+    st[pos] = st[2*pos+1] + st[2*pos+2];
+}
+
+int rangeSum(int st[], int qs, int qe, int low, int high, int pos){
+    if(low >= qs && qe >= high) return st[pos];
+    if(high < qs || low > qe) return;
+    int mid = (low+high)/2;
+    return rangeSum(st, qs, qe, low, mid, pos)+rangeSum(st, qs, qe, mid+1, high, pos);
+}
+
+void constructST(int arr[], int st[], int low, int high, int pos){
+    if(low == high){
+        st[pos]=arr[low];
+        return;
+    }
+    int mid = (low+high)/2;
+    constructST(arr, st, low, mid, 2*pos+1);
+    constructST(arr, st, mid+1, high, 2*pos+2);
+    st[pos]=st[2*pos+1]+st[2*pos+2];
+}
+int main(){
+    ios_base::sync_with_stdio(false);
+    int n,q;
+    cin>>n>>q;
+    vector<int>arr(n);
+    int sl=2*pow(2, ceil(log2(n)))-1;
+    vector<int>st(sl), lazy(sl);
+    constructST(arr,st,0,n-1,0);
+}
