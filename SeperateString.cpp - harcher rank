@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+uint64_t string_to_uint64(string str) {
+  stringstream stream(str);
+  uint64_t result;
+  stream >> result;
+  return result;
+}
+
+int main(){
+    int n, len, i, var, flag;
+    string str, min;
+    cin>>n;
+    while(n--){
+        cin>>str;
+        flag = 0;
+        len=0;
+        while(true){
+            len++; i=0;
+            if(len >= str.size()){flag=2;break;}
+            if(len >= str.size()/2+3){
+                flag=2;
+                break;
+            }
+            string start="";
+            while(i<len){
+                start+=str[i];
+                i++;
+            }
+            string temp=start;
+            min=start;
+            uint64_t sol = string_to_uint64(temp);
+            while(start.size() < str.size()){
+                sol++;
+                stringstream ss;
+                ss<<sol;
+                start+=ss.str();
+                if(start.size()==str.size()&&!start.compare(str)){
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag == 1) break;
+            if(start.size()==str.size()&&!start.compare(str)){
+                flag = 1;
+                break;
+            }
+           if(len+1==str.size()){
+                flag=2;
+                break;
+            }
+        }
+        if(flag == 1){
+            cout<<"YES ";
+            cout<<min<<"\n";
+        }
+        else cout<<"NO\n";
+    }
+    return 0;
+}
